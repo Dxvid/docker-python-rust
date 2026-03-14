@@ -5,17 +5,19 @@ RUN zypper --non-interactive --gpg-auto-import-keys refresh --force && \
     zypper --non-interactive dup --allow-vendor-change --auto-agree-with-licenses \
            --force-resolution --remove-orphaned && \
     zypper --non-interactive install --no-recommends\
-        python3.13 \
-        python3.13-pip \
-        python3.13-wheel \
-        python3.13-setuptools \
+        python313 \
+        python313-pip \
+        python313-wheel \
+        python313-setuptools \
         rustup \
         gcc \
         gcc-c++ \
-        make \
-        ca-certificates && \
-    zypper clean -a && \
-    update-ca-certificates
+        make && \
+    zypper clean -a
+
+# Behövs sannolikt inte:
+# RUN zypper --non-interactive install --no-recommends ca-certificates && \
+#    update-ca-certificates
 
 # Ifall man behöver hämta från repo eller packa upp:
 #        curl \
@@ -30,10 +32,11 @@ RUN zypper --non-interactive --gpg-auto-import-keys refresh --force && \
 # python3.13-rpy2
 
 # Initiera rustup och installera senaste stabila Rust
-RUN rustup-init -y --default-toolchain stable
+# RUN rustup-init -y --default-toolchain stable
+RUN rustup default 1.94
 
 # Lägg till Rust i PATH
-ENV PATH="/root/.cargo/bin:${PATH}"
+# ENV PATH="/root/.cargo/bin:${PATH}"
 
 # Verifiera installationer
 RUN python3.13 --version && \
