@@ -12,8 +12,22 @@ RUN zypper --non-interactive --gpg-auto-import-keys refresh --force && \
         rustup \
         gcc \
         gcc-c++ \
-        make && \
-    zypper clean -a
+        make \
+        curl \
+        unzip \
+        autoconf \
+        automake \
+        libtool \
+        findutils \
+        gawk \
+        diffutils \
+        python313-devel && \
+    zypper clean -a && \
+    rustup default 1.94 && \
+    python3 --version && \
+    pip3 --version && \
+    rustc --version && \
+    cargo --version
 
 # Behövs sannolikt inte:
 # RUN zypper --non-interactive install --no-recommends ca-certificates && \
@@ -30,18 +44,5 @@ RUN zypper --non-interactive --gpg-auto-import-keys refresh --force && \
 # gcc-fortran
 # python3.13-devel
 # python3.13-rpy2
-
-# Initiera rustup och installera senaste stabila Rust
-# RUN rustup-init -y --default-toolchain stable
-RUN rustup default 1.94
-
-# Lägg till Rust i PATH
-# ENV PATH="/root/.cargo/bin:${PATH}"
-
-# Verifiera installationer
-RUN python3.13 --version && \
-    pip3.13 --version && \
-    rustc --version && \
-    cargo --version
 
 CMD ["/bin/bash"]
