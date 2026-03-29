@@ -73,9 +73,9 @@ jobs:
         with:
           context: ${{ matrix.variant.path }}
           file: ${{ matrix.variant.path }}/Dockerfile
+          pull: true
           push: true
-
-          # ---- REAL CACHING ----
+          # ---- CACHING ----
           cache-from: type=gha
           cache-to: type=gha,mode=max
 

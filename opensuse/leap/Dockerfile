@@ -4,8 +4,7 @@ FROM opensuse/leap:16.0
 RUN zypper --non-interactive --gpg-auto-import-keys refresh --force && \
     zypper --non-interactive up --allow-vendor-change --auto-agree-with-licenses \
            --force-resolution && \
-    zypper se --details setuptools
-RUN    zypper --non-interactive in --no-recommends \
+    zypper --non-interactive in --no-recommends \
         curl \
         python313 \
         python313-pip \
@@ -46,7 +45,9 @@ RUN    zypper --non-interactive in --no-recommends \
 # RUN zypper in ocl-icd # not in standard repo ocl-icd-devel is probably good enough or better
 # RUN zypper --non-interactive install --no-recommends ca-certificates &&  update-ca-certificates
 
-# To install pyopencl directly in this image instead of building on top of this one as base image:
+# To install pyopencl directly in this image instead of building another image based on this image:
 # RUN pip3 install pyopencl --break-system-packages
+# Or create a requirement file:
+# RUN pip3 install --no-cache-dir --break-system-packages -r /requirements.txt
 
 CMD ["/bin/bash"]
