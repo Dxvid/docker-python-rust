@@ -6,6 +6,9 @@ set -euo pipefail
 # ---------------------------------------------
 VARIANT_PATH="${1:-opensuse/tumbleweed}"
 
+# Remove trailing slash(es)
+VARIANT_PATH="${VARIANT_PATH%/}"
+
 if [ ! -d "$VARIANT_PATH" ]; then
     echo "Error: Directory '$VARIANT_PATH' does not exist."
     exit 1
