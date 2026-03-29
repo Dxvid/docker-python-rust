@@ -81,12 +81,12 @@ jobs:
           # cache-to: type=gha,mode=max
 
           tags: |
-            dxvid/python-rust:${{ matrix.variant.tag_suffix }}
-            dxvid/python-rust:${{ matrix.variant.tag_suffix }}-${{ steps.versions.outputs.OS_VERSION }}
-            dxvid/python-rust:${{ matrix.variant.tag_suffix }}-${{ steps.versions.outputs.OS_VERSION }}-${{ steps.date.outputs.DATE_TAG }}
-            dxvid/python-rust:${{ matrix.variant.tag_suffix }}-${{ steps.versions.outputs.OS_VERSION }}-py${{ steps.versions.outputs.PYTHON_VERSION }}-rust${{ steps.versions.outputs.RUST_VERSION }}
-            dxvid/python-rust:${{ matrix.variant.tag_suffix }}-${{ steps.versions.outputs.OS_VERSION }}-py${{ steps.versions.outputs.PYTHON_VERSION }}-rust${{ steps.versions.outputs.RUST_VERSION }}-${{ steps.date.outputs.DATE_TAG }}
-            dxvid/python-rust:${{ matrix.variant.tag_suffix }}-py${{ steps.versions.outputs.PYTHON_VERSION }}-rust${{ steps.versions.outputs.RUST_VERSION }}
-            dxvid/python-rust:${{ matrix.variant.tag_suffix }}-${{ github.sha }}
-            ${{ matrix.variant.name == 'tumbleweed' && 'dxvid/python-rust:latest' || '' }}
-            ${{ matrix.variant.name == 'leap' && 'dxvid/python-rust:stable' || '' }}
+            davidkronlid/python-rust:${{ matrix.variant.tag_suffix }}
+            davidkronlid/python-rust:${{ matrix.variant.tag_suffix }}-${{ steps.versions.outputs.OS_VERSION }}
+            davidkronlid/python-rust:${{ matrix.variant.tag_suffix }}-${{ steps.versions.outputs.OS_VERSION }}-${{ steps.date.outputs.DATE_TAG }}
+            davidkronlid/python-rust:${{ matrix.variant.tag_suffix }}-${{ steps.versions.outputs.OS_VERSION }}-py${{ steps.versions.outputs.PYTHON_VERSION }}-rust${{ steps.versions.outputs.RUST_VERSION }}
+            davidkronlid/python-rust:${{ matrix.variant.tag_suffix }}-${{ steps.versions.outputs.OS_VERSION }}-py${{ steps.versions.outputs.PYTHON_VERSION }}-rust${{ steps.versions.outputs.RUST_VERSION }}-${{ steps.date.outputs.DATE_TAG }}
+            davidkronlid/python-rust:${{ matrix.variant.tag_suffix }}-py${{ steps.versions.outputs.PYTHON_VERSION }}-rust${{ steps.versions.outputs.RUST_VERSION }}
+            davidkronlid/python-rust:${{ matrix.variant.tag_suffix }}-${{ github.sha }}
+            ${{ matrix.variant.name == 'tumbleweed' && 'davidkronlid/python-rust:latest' || '' }}
+            ${{ matrix.variant.name == 'leap' && 'davidkronlid/python-rust:stable' || '' }}
