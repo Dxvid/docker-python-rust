@@ -1,0 +1,91 @@
+name: Nightly Docker Build
+
+on:
+  schedule:
+    - cron: "23 5 * * *"
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        variant:
+          - name: tumbleweed
+            path: opensuse/tumbleweed
+            tag_suffix: opensuse-tumbleweed
+          - name: leap
+            path: opensuse/leap
+            tag_suffix: opensuse-leap
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # -----------------------------
+      # Generate date tag
+      # -----------------------------
+      - name: Set date tag
+        id: date
+        run: echo "DATE_TAG=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
+
+      # -----------------------------
+      # Log in to Docker Hub
+      # -----------------------------
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # -----------------------------
+      # Build variant image (quiet)
+      # -----------------------------
+      - name: Build variant image
+        id: build
+        run: |
+          IMAGE_ID=$(docker build -q -f ${{ matrix.variant.path }}/Dockerfile ${{ matrix.variant.path }})
+          echo "IMAGE_ID=$IMAGE_ID" >> $GITHUB_OUTPUT
+
+      # -----------------------------
+      # Extract versions from variant
+      # -----------------------------
+      - name: Extract versions
+        id: versions
+        run: |
+          PY=$(docker run --rm ${{ steps.build.outputs.IMAGE_ID }} python3 --version | awk '{print $2}')
+          RUST=$(docker run --rm ${{ steps.build.outputs.IMAGE_ID }} rustc --version | awk '{print $2}')
+          OS=$(docker run --rm ${{ steps.build.outputs.IMAGE_ID }} bash -c "source /etc/os-release && echo \$VERSION_ID")
+
+          echo "PYTHON_VERSION=$PY" >> $GITHUB_OUTPUT
+          echo "RUST_VERSION=$RUST" >> $GITHUB_OUTPUT
+          echo "OS_VERSION=$OS" >> $GITHUB_OUTPUT
+
+      # -----------------------------
+      # Build and push final image (WITH CACHE)
+      # -----------------------------
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ matrix.variant.path }}
+          file: ${{ matrix.variant.path }}/Dockerfile
+          pull: true
+          push: true
+          # ---- CACHING ----
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+          tags: |
+            dxvid/python-rust:${{ matrix.variant.tag_suffix }}
+            dxvid/python-rust:${{ matrix.variant.tag_suffix }}-${{ steps.versions.outputs.OS_VERSION }}
+            dxvid/python-rust:${{ matrix.variant.tag_suffix }}-${{ steps.versions.outputs.OS_VERSION }}-${{ steps.date.outputs.DATE_TAG }}
+            dxvid/python-rust:${{ matrix.variant.tag_suffix }}-${{ steps.versions.outputs.OS_VERSION }}-py${{ steps.versions.outputs.PYTHON_VERSION }}-rust${{ steps.versions.outputs.RUST_VERSION }}
+            dxvid/python-rust:${{ matrix.variant.tag_suffix }}-${{ steps.versions.outputs.OS_VERSION }}-py${{ steps.versions.outputs.PYTHON_VERSION }}-rust${{ steps.versions.outputs.RUST_VERSION }}-${{ steps.date.outputs.DATE_TAG }}
+            dxvid/python-rust:${{ matrix.variant.tag_suffix }}-py${{ steps.versions.outputs.PYTHON_VERSION }}-rust${{ steps.versions.outputs.RUST_VERSION }}
+            dxvid/python-rust:${{ matrix.variant.tag_suffix }}-${{ github.sha }}
+            ${{ matrix.variant.name == 'tumbleweed' && 'dxvid/python-rust:latest' || '' }}
+            ${{ matrix.variant.name == 'leap' && 'dxvid/python-rust:stable' || '' }}
