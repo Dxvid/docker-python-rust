@@ -5,25 +5,39 @@ RUN zypper --non-interactive --gpg-auto-import-keys refresh --force && \
     zypper --non-interactive up --allow-vendor-change --auto-agree-with-licenses \
            --force-resolution && \
     zypper --non-interactive in --no-recommends \
-        curl \
-        python313 \
-        python313-pip \
-        python313-wheel \
-        python313-setuptools \
-        python313-devel \
-        python313-setuptools-rust \
-        gcc \
-        gcc-c++ \
-        make \
-        unzip \
         autoconf \
         automake \
-        libtool \
+        clinfo \
+        cmake \
+        curl \
+        diffutils \
         findutils \
         gawk \
-        diffutils \
+        gcc \
+        gcc-c++ \
+        gcc-fortran \
+        git-core \
+        gmp-devel \
+        gzip \
+        libffi-devel \
+        libopenssl-devel \
+        libsecp256k1-devel \
+        libsodium-devel \
+        libtool \
+        make \
+        ninja \
         ocl-icd-devel \
-        clinfo \
+        opencl-headers \
+        patchelf \
+        pkg-config \
+        python313 \
+        python313-devel \
+        python313-pip \
+        python313-setuptools \
+        python313-setuptools-rust \
+        python313-wheel \
+        tar \
+        unzip \
         && \
     zypper clean -a && \
     python3 --version && \
@@ -35,17 +49,10 @@ RUN zypper --non-interactive --gpg-auto-import-keys refresh --force && \
 # If you need 1.95 instead of what's the default in python313-setuptools-rust
 # RUN zypper in rustup && rustup default 1.95
 
-# If you need to fetch files from a repo:
-# RUN zypper in git-core
-
 # If R is needed:
-# RUN zypper in R-base gcc-fortran python313-rpy2
+# RUN zypper in R-base python313-rpy2
 
-# Probably not needed:
-# RUN zypper in ocl-icd # not in standard repo ocl-icd-devel is probably good enough or better
-# RUN zypper --non-interactive install --no-recommends ca-certificates &&  update-ca-certificates
-
-# To install pyopencl directly in this image instead of building another image based on this image:
+# To install pyopencl directly in this image instead of building on top of this one as base image:
 # RUN pip3 install pyopencl --break-system-packages
 # Or create a requirement file:
 # RUN pip3 install --no-cache-dir --break-system-packages -r /requirements.txt
